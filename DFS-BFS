@@ -1,0 +1,134 @@
+#include<iostream> 
+#include <list> 
+  
+using namespace std; 
+  
+class Graph 
+{ 
+    int V;
+  
+    
+    list<int> *adj;    
+public: 
+    Graph(int V);  
+    void addEdge(int v, int w);  
+    void DFS(int v);
+    void DFSUtil(int v, bool visited[],int &flag);
+    void BFS(int s,int &n);   
+}; 
+  
+Graph::Graph(int V) 
+{ 
+    this->V = V; 
+    adj = new list<int>[V]; 
+} 
+  
+void Graph::addEdge(int v, int w) 
+{ 
+    adj[v].push_back(w);
+} 
+  
+void Graph::BFS(int s,int &n) 
+{   
+    bool *visited = new bool[V]; 
+    for(int i = 0; i < V; i++) 
+        visited[i] = false; 
+  
+    list<int> queue; 
+  
+    visited[s] = true; 
+    queue.push_back(s); 
+  
+    list<int>::iterator i; 
+  
+    while(!queue.empty()) 
+    { 
+        s = queue.front(); 
+        cout << s << " "; 
+        queue.pop_front(); 
+  
+        for (i = adj[s].begin(); i != adj[s].end(); ++i) 
+        {   
+            if (!visited[*i]) 
+            { 
+                visited[*i] = true; 
+                queue.push_back(*i); 
+            } 
+        } 
+    } 
+    
+} 
+void Graph::DFSUtil(int v, bool visited[],int &flag) 
+{ 
+    visited[v] = true; 
+    int temp=0;
+  
+    list<int>::iterator i; 
+    for (i = adj[v].begin(); i != adj[v].end(); ++i) 
+    {   if(visited[*i])
+            flag=1;
+        if (!visited[*i]) 
+            DFSUtil(*i, visited,flag); 
+    }
+    
+} 
+  
+void Graph::DFS(int v) 
+{   int flag=0,temp=0;
+    bool *visited = new bool[V]; 
+    for (int i = 0; i < V; i++) 
+        visited[i] = false; 
+  
+    DFSUtil(v, visited,flag); 
+    for(int i=0;i<V;i++)
+    {
+        if(visited[i]==false)
+         {   temp=1;
+            cout<<"Graph is not connected"<<endl;
+            break;
+         }  
+    }
+    if(temp==0)
+        cout<<"Graph is connected"<<endl;
+    if(flag==0)
+        cout<<"there are no cycles in the graph"<<endl;
+    if(flag==1)
+        cout<<"there are cycles in the graph"<<endl;
+} 
+int main() 
+
+{   
+    int n,temp=0,u,v,ch,a;
+    cout<<"enter number of nodes";
+    cin>>n;
+    Graph g(n);
+    for(int i=0;i<n-1;i++)
+    {   
+        cin>>u>>v;
+        g.addEdge(u,v);
+    }
+    while(1)
+    {
+    cout<<"1:bfs traversal      2:Check if the graph is connected and if cycles are present in the graph"<<endl;
+    cin>>ch;
+    switch(ch)
+    {
+        
+      case 1:
+        {   cout<<"enter starting node:";
+            cin>>a;
+            cout<<"bfs traversal"<<endl;
+         
+            g.BFS(a,n);
+            break;
+        }
+      case 2:
+      { cout<<"enter starting node:";
+            cin>>a;
+        g.DFS(a);
+        break;
+      }
+    }
+    }
+    return 0; 
+} 
