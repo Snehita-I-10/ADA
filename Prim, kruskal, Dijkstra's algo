@@ -1,0 +1,294 @@
+
+//dijkstras and prim's Algorithm
+#include <bits/stdc++.h>
+
+using namespace std;
+#define V 5
+
+void prims(int graph[V][V])
+{
+    int parent[V];
+    int key[V];
+    bool mst[V];
+    for(int i=0;i<V;i++)
+    {
+        key[i]=100;
+        mst[i]=false;
+    }
+    key[0]=0;
+    parent[0]=-1;
+    // findind min key
+    for(int v=0;v<V-1;v++)
+    {   int min=100,m;
+     for(int i=0;i<V;i++)
+     {
+        if(mst[i]==false && key[i]<min)
+        {
+            min=key[i];
+            m=i;
+        }
+      }
+      mst[m]=true;
+       for(int i=0;i<V;i++)
+       {
+           if(graph[m][i] && mst[i]==false && graph[m][i]<key[i])
+           {
+            key[i]=graph[m][i];
+            parent[i]=m;
+           }
+        }
+    }
+    cout<<"Edge \tWeight\n";  
+    for (int i = 1; i < V; i++)  
+        cout<<parent[i]<<" - "<<i<<" \t"<<graph[i][parent[i]]<<" \n";  
+}
+int main()
+{   
+    int graph[V][V] = { { 0, 2, 0, 6, 0 },  
+                        { 2, 0, 3, 8, 5 },  
+                        { 0, 3, 0, 0, 7 },  
+                        { 6, 8, 0, 0, 9 },  
+                        { 0, 5, 7, 9, 0 } };  
+                    prims(graph);
+
+}
+void dijkstras(int graph[V][V])
+{
+    int dis[V];
+    bool sptset[V];
+    
+    for(int i=0;i<V;i++)
+    {
+        dis[i]=1000;
+        sptset[i]=false;
+    }
+    dis[0]=0;
+    for(int v=0;v<V-1;v++)
+    { int min=1000,m;
+    for(int i=0;i<V;i++)
+    {  
+        if(sptset[i]==false && dis[i]<min)
+        {
+            min=dis[i];
+            m=i;
+        }
+    }
+    sptset[m]=true;
+    for(int i=0;i<V;i++)
+    {
+        if(sptset[i]==false && graph[m][i] && dis[m]+graph[m][i]<dis[i])
+            dis[i]= dis[m]+graph[m][i];
+    }
+    }
+     printf("Vertex \t\t Distance from Source\n"); 
+    for (int i = 0; i < V; i++) 
+        printf("%d \t\t %d\n", i, dis[i]); 
+
+    
+}
+int main()
+{   
+    int graph[V][V] ;
+    cout<<"Entre the adjacency matrix"<<endl;
+    for(int i=0;i<V;i++)
+    {
+    for(int j=0;j<V;j++)
+    {
+      cin>>graph[i][j];
+    }
+    }
+                   dijkstras(graph);
+
+}
+
+//Kruskal's Algorithm
+
+#include <iostream>
+using namespace std;
+    int i,j,k,a,b,u,v,n,ne=1;
+    int min,mincost=0,cost[9][9],parent[9];
+  int find(int i)
+    {
+     while(parent[i])
+     i=parent[i];
+     return i;
+    }
+    int uni(int i,int j)
+    {
+     if(i!=j)
+     {
+     parent[j]=i;
+     return 1;
+     }
+     return 0;
+    }
+    void main()
+    {
+     printf("\nEnter the no. of vertices:");
+     cin>>n;
+     printf("\nEnter the cost adjacency matrix:\n");
+     for(i=1;i<=n;i++)
+     {
+     for(j=1;j<=n;j++)
+     {
+     cin>>cost[i][j];
+     if(cost[i][j]==0)
+     cost[i][j]=999;
+     }
+     }
+     printf("The edges of Minimum Cost Spanning Tree are\n");
+     while(ne < n)
+     {
+     for(i=1,min=999;i<=n;i++)
+     {
+     for(j=1;j <= n;j++)
+     {
+     if(cost[i][j] < min)
+     {
+     min=cost[i][j];
+     a=u=i;
+     b=v=j;
+     }
+     }
+     }
+     u=find(u);
+     v=find(v);
+     if(uni(u,v))
+     {
+     printf("%d edge (%d,%d) =%d\n",ne++,a,b,min);
+     mincost +=min;
+     }
+     cost[a][b]=cost[b][a]=999;
+     }
+     cout<<"Minimum cost"<<mincost;
+  
+    }
+    
+    //COIN EXCHANGE PROBLEM
+    
+    #include <iostream>
+
+using namespace std;
+
+void mincoinchange(int arr[],int coins[],int A,int n){
+    int k=0;
+    for(int i=n-1;i>=0;i--){
+        while((A-coins[i])>=0)
+        {
+             A=A-coins[i];
+             arr[k]=coins[i];
+             k++;
+             
+        }
+    }
+    for(int i=0;i<k;i++)
+        cout<<arr[i]<<" ";
+
+    
+    
+}
+int main()
+{
+   int n;
+   cout<<"Enter the number of denominations:"<<endl;
+   cin>>n;
+   int coins[n];int arr[n];
+   cout<<"Enter the denominations in ascending order"<<endl;
+   for(int i=0;i<n;i++)
+    cin>>coins[i];
+    int A;
+    cout<<"enter the amount:"<<endl;
+    cin>>A;
+    mincoinchange(arr,coins,A,n);
+
+    return 0;
+}
+
+
+//LIS
+#include<stdio.h> 
+#include<stdlib.h> 
+  
+int _lis( int arr[], int n, int *max_ref) 
+{
+    if (n == 1) 
+        return 1; 
+  
+    int res, max_ending_here = 1;  
+  
+    for (int i = 1; i < n; i++) 
+    { 
+        res = _lis(arr, i, max_ref); 
+        if (arr[i-1] < arr[n-1] && res + 1 > max_ending_here) 
+            max_ending_here = res + 1; 
+    } 
+  
+    if (*max_ref < max_ending_here) 
+       *max_ref = max_ending_here; 
+  
+    return max_ending_here; 
+} 
+  
+int lis(int arr[], int n) 
+{ 
+    // The max variable holds the result 
+    int max = 1; 
+  
+    _lis( arr, n, &max ); 
+  
+    return max; 
+} 
+  
+int main() 
+{ 
+    int arr[] = { 10, 22, 9, 33, 21, 50, 41, 60 }; 
+    int n = sizeof(arr)/sizeof(arr[0]); 
+    printf("Length of lis is %dn", 
+           lis( arr, n )); 
+    return 0; 
+} 
+
+//PARTITION PROBLEM
+
+#include <bits/stdc++.h> 
+using namespace std; 
+  
+bool isSubsetSum (int arr[], int n, int sum)  
+{  
+    if (sum == 0)  
+        return true;  
+    if (n == 0 && sum != 0)  
+        return false;  
+  
+   
+    if (arr[n-1] > sum)  
+       return isSubsetSum (arr, n-1, sum);  
+  
+    return isSubsetSum (arr, n-1, sum) ||  
+        isSubsetSum (arr, n-1, sum-arr[n-1]);  
+}  
+  
+bool findPartiion (int arr[], int n)  
+{  
+    int sum = 0;  
+    for (int i = 0; i < n; i++)  
+    sum += arr[i];  
+  
+    if (sum%2 != 0)  
+    return false;  
+  
+    return isSubsetSum (arr, n, sum/2);  
+}  
+  
+int main()  
+{  
+    int arr[] = {3, 1, 5, 9, 12};  
+    int n = sizeof(arr)/sizeof(arr[0]);  
+    if (findPartiion(arr, n) == true)  
+        cout << "Can be divided into two subsets "
+                "of equal sum";  
+    else
+        cout << "Can not be divided into two subsets"
+                " of equal sum";  
+    return 0;  
+}  
